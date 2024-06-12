@@ -1,35 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import css from './App.module.css';
+import contactsData from './db';
+import ContactForm from './components/contactform/ContactForm';
+import ContactList from './components/contactlist/ContactList';
+import SearchBox from './components/searchbox/SearchBox';
+import { useEffect, useState } from 'react';
 function App() {
-  const [count, setCount] = useState(0)
 
+  const [contacts, setContacts] = useState(JSON.parse(localStorage.getItem('contacts')) || []);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
+  
+   const handleDelete = (id) => {
+    const filteredContacts = contacts.filter((item) => item.id !== id);
+    setContacts(filteredContacts);
+  }
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className={css['container']}>
+      <h1 className={css['app-title']}>Phonebook</h1>
+      <ContactForm contacts={contacts} setContacts={setContacts} />
+      <SearchBox search={search} setSearch={setSearch}  />
+      <ContactList
+        handleDelete={handleDelete}
+        contactsData={contacts.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase()))}
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;

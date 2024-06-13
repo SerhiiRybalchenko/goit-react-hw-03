@@ -40,6 +40,6 @@
   }
   .error {
     display: block;
-    color: red;
+    color: rgb(151, 52, 52);
     margin-bottom: 8px;
   }
